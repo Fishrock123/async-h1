@@ -77,8 +77,8 @@ where
     let transfer_encoding = res.header(&TRANSFER_ENCODING);
 
     ensure!(
-        content_length.is_none() || transfer_encoding.is_none(),
-        "Unexpected Content-Length header"
+        !(content_length.is_some() && transfer_encoding.is_some()),
+        "Unexpected Content-Length & Transfer-Encoding headers"
     );
 
     if let Some(encoding) = transfer_encoding {
@@ -96,6 +96,8 @@ where
     if let Some(len) = content_length {
         let len = len.last().unwrap().as_str().parse::<usize>()?;
         res.set_body(Body::from_reader(reader.take(len as u64), Some(len)));
+    } else {
+        res.set_body(Body::from_reader(reader, None));
     }
 
     // Return the response.
