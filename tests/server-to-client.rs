@@ -24,7 +24,7 @@ const TEXT: &'static str = concat![
 async fn async_h1_client() -> Result<(), http_types::Error> {
     let port = test_utils::find_port().await;
     let server = task::spawn(async move {
-        let listener = async_std::net::TcpListener::bind(("localhost", port)).await?;
+        let listener = async_std::net::TcpListener::bind(("127.0.0.1", port)).await?;
 
         let mut incoming = listener.incoming();
         let stream = incoming.next().await.unwrap().unwrap();
